@@ -10,9 +10,9 @@ const App = () => {
     isFilterActive: state.isFilterActive,
   }));
   return (
-    <main>
-      <div className="mx-auto flex max-w-[1200px] flex-col items-center justify-center">
-        <h1 className="my-6 text-center text-4xl text-teal-700">
+    <main className="flex h-screen flex-col">
+      <div className="mx-auto flex max-w-[1200px] flex-1 flex-col items-center">
+        <h1 className="my-6 justify-items-start text-center text-4xl text-teal-700">
           Test Task Valantis
         </h1>
         <ProductsFilterForm />

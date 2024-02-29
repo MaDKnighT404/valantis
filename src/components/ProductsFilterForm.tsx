@@ -24,7 +24,7 @@ export const ProductsFilterForm = () => {
     setFilterPage: state.setFilterPage,
   }));
 
-  // При выполнении мутации applyFilter устанавливаем в сторе массив с Id 
+  // При выполнении мутации applyFilter устанавливаем в сторе массив с Id
   // всех отфильтрованных товаров
   const { mutate: applyFilter, isLoading: isFiltering } = useMutation({
     mutationFn: filterItems,
@@ -40,7 +40,7 @@ export const ProductsFilterForm = () => {
     setProductsFilter({ ...productsFilter, [field]: value });
   };
 
-  // Если в форме заполнено хоть одно поле, то устанавливаем 1 страницу пагинации для 
+  // Если в форме заполнено хоть одно поле, то устанавливаем 1 страницу пагинации для
   // обоих списков продуктов и вызываем мутацию applyFilter
   const handleFilterSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -59,7 +59,7 @@ export const ProductsFilterForm = () => {
   return (
     <form
       onSubmit={handleFilterSubmit}
-      className="mx-auto my-8 flex max-w-md flex-col gap-4 rounded-lg bg-white p-4 shadow-md">
+      className="mx-auto my-4 flex max-w-md flex-col gap-4 rounded-lg bg-white p-4 shadow-md">
       <label className="flex flex-col items-center justify-between gap-4 md:flex-row">
         <span className="min-w-[120px]">Product name:</span>
         <input
@@ -98,7 +98,7 @@ export const ProductsFilterForm = () => {
       <button
         type="submit"
         disabled={isLoading || isFiltering}
-        className="mt-4 rounded bg-teal-600 px-3 py-1 font-semibold text-white hover:bg-teal-700 disabled:opacity-50 disabled:hover:bg-teal-600 disabled:hover:text-white">
+        className="mt-4 rounded bg-teal-600 px-3 py-2 font-semibold text-white hover:bg-teal-700 disabled:opacity-50 disabled:hover:bg-teal-600 disabled:hover:text-white">
         Apply Filters
       </button>
     </form>

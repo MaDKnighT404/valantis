@@ -38,7 +38,7 @@ export const ProductsList = () => {
       {loading ? (
         <Spinner className="h-32 w-32 self-center text-teal-600" />
       ) : (
-        <ul className="grid grid-cols-1  gap-4 md:grid-cols-2 lg:grid-cols-5">
+        <ul className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5 px-4">
           {!!items &&
             items.map((item, i) => (
               <li

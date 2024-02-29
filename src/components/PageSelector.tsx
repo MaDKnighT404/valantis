@@ -29,7 +29,7 @@ export const PageSelector = () => {
       setPage(page + 1);
     }
   };
-  
+
   const handlerDecreasePage = () => {
     if (isFilterActive) {
       setFilterPage(Math.max(filterPage - 1, 1));
@@ -51,7 +51,7 @@ export const PageSelector = () => {
 
       <span className="flex gap-2 text-zinc-600">
         Page:
-        <span className="text-orange-500">
+        <span className="text-orange-600">
           {isFilterActive ? filterPage : page}
         </span>
       </span>
