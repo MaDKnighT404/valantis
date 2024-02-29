@@ -8,19 +8,36 @@ export interface ProductsFilter {
 
 interface ProductsStore {
   page: number;
-  increasePage: () => void;
-  decreasePage: () => void;
+  setPage: (value: number) => void;
+
+  filterPage: number;
+  setFilterPage: (value: number) => void;
+
+  totalFilteredPages: number;
+  setTotalFilteredPages: (pages: number) => void;
+
   isLoading: boolean;
   setIsLoading: (status: boolean) => void;
 
   productsFilter: ProductsFilter;
   setProductsFilter: (newFilter: Partial<ProductsFilter>) => void;
+
+  filteredItemIds: string[];
+  setFilteredItemIds: (ids: string[]) => void;
+
+  isFilterActive: boolean;
+  setIsFilterActive: (status: boolean) => void;
 }
 
 export const useProductStore = create<ProductsStore>((set) => ({
   page: 1,
-  increasePage: () => set((state) => ({ page: state.page + 1 })),
-  decreasePage: () => set((state) => ({ page: Math.max(state.page - 1, 1) })),
+  setPage: (newValue) => set({ page: newValue }),
+
+  filterPage: 1,
+  setFilterPage: (newValue) => set({ filterPage: newValue }),
+
+  totalFilteredPages: 0,
+  setTotalFilteredPages: (pages) => set(() => ({ totalFilteredPages: pages })),
 
   isLoading: false,
   setIsLoading: (status) => set({ isLoading: status }),
@@ -34,4 +51,10 @@ export const useProductStore = create<ProductsStore>((set) => ({
     set((state) => ({
       productsFilter: { ...state.productsFilter, ...newProductFilter },
     })),
+
+  filteredItemIds: [],
+  setFilteredItemIds: (ids: string[]) => set({ filteredItemIds: ids }),
+
+  isFilterActive: false,
+  setIsFilterActive: (status) => set({ isFilterActive: status }),
 }));

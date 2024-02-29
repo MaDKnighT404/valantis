@@ -4,25 +4,30 @@ import { useMutation } from 'react-query';
 import { filterItems } from '../api/api';
 
 export const ProductsFilterForm = () => {
-  const { isLoading, productsFilter, setProductsFilter } = useProductStore(
-    (state) => ({
-      isLoading: state.isLoading,
-      productsFilter: state.productsFilter,
-      setProductsFilter: state.setProductsFilter,
-    }),
-  );
+  const {
+    isLoading,
+    productsFilter,
+    setProductsFilter,
+    setFilteredItemIds,
+    setIsFilterActive,
+    setPage,
+    setFilterPage,
+  } = useProductStore((state) => ({
+    isLoading: state.isLoading,
+    productsFilter: state.productsFilter,
+    setProductsFilter: state.setProductsFilter,
+    setFilteredItemIds: state.setFilteredItemIds,
+    setIsFilterActive: state.setIsFilterActive,
+    setPage: state.setPage,
+    setFilterPage: state.setFilterPage,
+  }));
 
-  const { mutate: applyFilter, isLoading: isFiltering } = useMutation(
-    filterItems,
-    {
-      onSuccess: (data) => {
-        console.log('Результат фильтрации:', data);
-      },
-      onError: (error) => {
-        console.error('Ошибка при фильтрации:', error);
-      },
+  const { mutate: applyFilter, isLoading: isFiltering } = useMutation({
+    mutationFn: filterItems,
+    onSuccess: async (data) => {
+      setFilteredItemIds(data);
     },
-  );
+  });
 
   const handleChange = (
     field: keyof ProductsFilter,
@@ -34,6 +39,15 @@ export const ProductsFilterForm = () => {
   const handleFilterSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     applyFilter(productsFilter);
+    const selectedFilter =
+      productsFilter.product || productsFilter.price || productsFilter.brand;
+    if (selectedFilter) {
+      setPage(1);
+      setFilterPage(1);
+      setIsFilterActive(true);
+    } else {
+      setIsFilterActive(false);
+    }
   };
 
   return (

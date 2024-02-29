@@ -1,7 +1,13 @@
+import { FilteredProductsList } from './components/FilteredProductsList';
+import { PageSelector } from './components/PageSelector';
 import { ProductsFilterForm } from './components/ProductsFilterForm';
 import { ProductsList } from './components/ProductsList';
+import { useProductStore } from './store';
 
 const App = () => {
+  const { isFilterActive } = useProductStore((state) => ({
+    isFilterActive: state.isFilterActive,
+  }));
   return (
     <main>
       <div className="mx-auto flex max-w-[1200px] flex-col items-center justify-center">
@@ -9,7 +15,8 @@ const App = () => {
           Test Task Valantis
         </h1>
         <ProductsFilterForm />
-        <ProductsList />
+        <PageSelector />
+        {isFilterActive ? <FilteredProductsList /> : <ProductsList />}
       </div>
     </main>
   );
