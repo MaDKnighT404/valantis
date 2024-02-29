@@ -1,4 +1,4 @@
-import { FilterForm } from './components/FilterForm';
+import { ProductsFilterForm } from './components/ProductsFilterForm';
 import { ProductsList } from './components/ProductsList';
 
 const App = () => {
@@ -8,7 +8,7 @@ const App = () => {
         <h1 className="text-center text-4xl text-teal-700">
           Test Task Valantis
         </h1>
-        <FilterForm />
+        <ProductsFilterForm />
         <ProductsList />
       </div>
     </main>

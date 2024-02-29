@@ -1,19 +1,40 @@
-import { FormEvent, useState } from 'react';
-import { useProductStore } from '../store';
+import { FormEvent } from 'react';
+import { ProductsFilter, useProductStore } from '../store';
+import { useMutation } from 'react-query';
+import { filterItems } from '../api/api';
 
-export const FilterForm = () => {
-  const [filter, setFilter] = useState({
-    product: '',
-    price: 0,
-    brand: '',
-  });
+export const ProductsFilterForm = () => {
+  const { isLoading, productsFilter, setProductsFilter } = useProductStore(
+    (state) => ({
+      isLoading: state.isLoading,
+      productsFilter: state.productsFilter,
+      setProductsFilter: state.setProductsFilter,
+    }),
+  );
+
+  const { mutate: applyFilter, isLoading: isFiltering } = useMutation(
+    filterItems,
+    {
+      onSuccess: (data) => {
+        console.log('Результат фильтрации:', data);
+      },
+      onError: (error) => {
+        console.error('Ошибка при фильтрации:', error);
+      },
+    },
+  );
+
+  const handleChange = (
+    field: keyof ProductsFilter,
+    value: string | number,
+  ) => {
+    setProductsFilter({ ...productsFilter, [field]: value });
+  };
 
   const handleFilterSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(filter);
+    applyFilter(productsFilter);
   };
-
-  const isLoading = useProductStore((state) => state.isLoading);
 
   return (
     <form
@@ -24,9 +45,9 @@ export const FilterForm = () => {
         <input
           type="text"
           placeholder="Золотое кольцо"
-          value={filter.product}
+          value={productsFilter.product}
           className="flex-1 rounded border border-gray-300 p-2"
-          onChange={(e) => setFilter({ ...filter, product: e.target.value })}
+          onChange={(e) => handleChange('product', e.target.value)}
         />
       </label>
       <label className="flex flex-col items-center justify-between gap-4 md:flex-row">
@@ -34,13 +55,13 @@ export const FilterForm = () => {
         <input
           type="number"
           placeholder="5000"
-          value={filter.price || ''}
+          value={productsFilter.price || ''}
           className="flex-1 rounded border border-gray-300 p-2"
           onChange={(e) =>
-            setFilter({
-              ...filter,
-              price: e.target.value ? parseInt(e.target.value, 10) : 0,
-            })
+            handleChange(
+              'price',
+              e.target.value ? parseInt(e.target.value, 10) : 0,
+            )
           }
         />
       </label>
@@ -49,14 +70,14 @@ export const FilterForm = () => {
         <input
           type="text"
           placeholder="Piaget"
-          value={filter.brand}
+          value={productsFilter.brand}
           className="flex-1 rounded border border-gray-300 p-2"
-          onChange={(e) => setFilter({ ...filter, brand: e.target.value })}
+          onChange={(e) => handleChange('brand', e.target.value)}
         />
       </label>
       <button
         type="submit"
-        disabled={isLoading}
+        disabled={isLoading || isFiltering}
         className="mt-4 rounded bg-teal-600 px-3 py-1 font-semibold text-white hover:bg-teal-700 disabled:opacity-50 disabled:hover:bg-teal-600 disabled:hover:text-white">
         Apply Filters
       </button>

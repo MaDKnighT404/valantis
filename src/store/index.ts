@@ -1,23 +1,23 @@
 import { create } from 'zustand';
 
-interface ProductFilter {
+export interface ProductsFilter {
   product: string;
-  price: number | null;
+  price: number;
   brand: string;
 }
 
-interface ProductStore {
+interface ProductsStore {
   page: number;
   increasePage: () => void;
   decreasePage: () => void;
   isLoading: boolean;
   setIsLoading: (status: boolean) => void;
 
-  productFilter: ProductFilter;
-  setFilter: (newFilter: Partial<ProductFilter>) => void;
+  productsFilter: ProductsFilter;
+  setProductsFilter: (newFilter: Partial<ProductsFilter>) => void;
 }
 
-export const useProductStore = create<ProductStore>((set) => ({
+export const useProductStore = create<ProductsStore>((set) => ({
   page: 1,
   increasePage: () => set((state) => ({ page: state.page + 1 })),
   decreasePage: () => set((state) => ({ page: Math.max(state.page - 1, 1) })),
@@ -25,13 +25,13 @@ export const useProductStore = create<ProductStore>((set) => ({
   isLoading: false,
   setIsLoading: (status) => set({ isLoading: status }),
 
-  productFilter: {
+  productsFilter: {
     product: '',
-    price: null,
+    price: 0,
     brand: '',
   },
-  setFilter: (newFilter) =>
+  setProductsFilter: (newProductFilter) =>
     set((state) => ({
-      productFilter: { ...state.productFilter, ...newFilter },
+      productsFilter: { ...state.productsFilter, ...newProductFilter },
     })),
 }));

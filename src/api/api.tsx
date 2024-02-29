@@ -90,3 +90,108 @@ export const fetchItems = async (ids: string[]): Promise<Item[]> => {
     throw error;
   }
 };
+
+export const filterItemsByPrice = async (price: number) => {
+  const password = 'Valantis';
+  const timestamp = new Date().toISOString().split('T')[0].replace(/-/g, '');
+  const authString = md5(`${password}_${timestamp}`);
+  const response = await axios.post(
+    'https://api.valantis.store:41000/',
+    {
+      action: 'filter',
+      params: { price },
+    },
+    {
+      headers: {
+        'X-Auth': authString,
+      },
+    },
+  );
+  return response.data;
+};
+
+export const filterItemsByProductName = async (product: string) => {
+  const password = 'Valantis';
+  const timestamp = new Date().toISOString().split('T')[0].replace(/-/g, '');
+  const authString = md5(`${password}_${timestamp}`);
+  const response = await axios.post(
+    'https://api.valantis.store:41000/',
+    {
+      action: 'filter',
+      params: { product },
+    },
+    {
+      headers: {
+        'X-Auth': authString,
+      },
+    },
+  );
+  return response.data;
+};
+
+export const filterItemsByBrand = async (brand: string) => {
+  const password = 'Valantis';
+  const timestamp = new Date().toISOString().split('T')[0].replace(/-/g, '');
+  const authString = md5(`${password}_${timestamp}`);
+  const response = await axios.post(
+    'https://api.valantis.store:41000/',
+    {
+      action: 'filter',
+      params: { brand },
+    },
+    {
+      headers: {
+        'X-Auth': authString,
+      },
+    },
+  );
+  return response.data;
+};
+
+export const filterItems = async (filters: {
+  price?: number;
+  product?: string;
+  brand?: string;
+}) => {
+  const password = 'Valantis';
+  const timestamp = new Date().toISOString().split('T')[0].replace(/-/g, '');
+  const authString = md5(`${password}_${timestamp}`);
+  const baseURL = 'https://api.valantis.store:41000/';
+
+  const headers = {
+    'X-Auth': authString,
+  };
+
+  const filterResults = async (filterParam: string, value: any) => {
+    const response = await axios.post(
+      baseURL,
+      {
+        action: 'filter',
+        params: { [filterParam]: value },
+      },
+      { headers },
+    );
+
+    return response.data.result;
+  };
+
+  let results: string[] = [];
+
+  // Последовательно применяем фильтры, если они заданы
+  if (filters.price) {
+    results = await filterResults('price', filters.price);
+  }
+  if (filters.product) {
+    const productResults = await filterResults('product', filters.product);
+    results = results.length
+      ? results.filter((id) => productResults.includes(id))
+      : productResults;
+  }
+  if (filters.brand) {
+    const brandResults = await filterResults('brand', filters.brand);
+    results = results.length
+      ? results.filter((id) => brandResults.includes(id))
+      : brandResults;
+  }
+  return results;
+};
