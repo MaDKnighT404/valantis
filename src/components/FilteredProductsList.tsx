@@ -1,3 +1,10 @@
+// Так как наш любимый бэкенд не предоставил возможность лимитированной фильтрации продукции
+// Был создан этот дополнительный компонент, который практически полностью копирует стандартный ProductList
+// Разница лишь в том, что вся логика по лимитированию показанных элементов, а также
+// логика для пагинации находится тут.
+// Надеюсь на следующем митинге мы сможем убедить бэк добавить поле limit в params для экшена filter
+// и этот компонент можно будет удалить.
+
 import { useQuery } from 'react-query';
 import { fetchItems } from '../api/api';
 import { useProductStore } from '../store';
@@ -39,7 +46,11 @@ export const FilteredProductsList = () => {
         <Spinner className="h-32 w-32 self-center text-teal-600" />
       ) : (
         <div>
-          <h2>Найдено товаров:{filteredItemIds?.length}</h2>
+          <h2>
+            {filteredItemIds?.length
+              ? `Найдено товаров: ${filteredItemIds?.length}`
+              : 'Товаров с таким запросом не найдено'}
+          </h2>
           <ul className="grid grid-cols-1  gap-4 md:grid-cols-2 lg:grid-cols-5">
             {!!items &&
               items.map((item) => (

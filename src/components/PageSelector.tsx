@@ -1,3 +1,4 @@
+// Переключатель страниц
 import { useProductStore } from '../store';
 
 export const PageSelector = () => {
@@ -28,7 +29,7 @@ export const PageSelector = () => {
       setPage(page + 1);
     }
   };
-
+  
   const handlerDecreasePage = () => {
     if (isFilterActive) {
       setFilterPage(Math.max(filterPage - 1, 1));

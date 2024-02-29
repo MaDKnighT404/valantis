@@ -1,3 +1,5 @@
+// Форма для фильтрации продуктов
+
 import { FormEvent } from 'react';
 import { ProductsFilter, useProductStore } from '../store';
 import { useMutation } from 'react-query';
@@ -22,6 +24,8 @@ export const ProductsFilterForm = () => {
     setFilterPage: state.setFilterPage,
   }));
 
+  // При выполнении мутации applyFilter устанавливаем в сторе массив с Id 
+  // всех отфильтрованных товаров
   const { mutate: applyFilter, isLoading: isFiltering } = useMutation({
     mutationFn: filterItems,
     onSuccess: async (data) => {
@@ -36,15 +40,17 @@ export const ProductsFilterForm = () => {
     setProductsFilter({ ...productsFilter, [field]: value });
   };
 
+  // Если в форме заполнено хоть одно поле, то устанавливаем 1 страницу пагинации для 
+  // обоих списков продуктов и вызываем мутацию applyFilter
   const handleFilterSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    applyFilter(productsFilter);
     const selectedFilter =
       productsFilter.product || productsFilter.price || productsFilter.brand;
     if (selectedFilter) {
       setPage(1);
       setFilterPage(1);
       setIsFilterActive(true);
+      applyFilter(productsFilter);
     } else {
       setIsFilterActive(false);
     }

@@ -10,11 +10,16 @@ export const ProductsList = () => {
     setIsLoading: state.setIsLoading,
   }));
 
+  // получаем все Id от 1 до page * 50
   const { data: itemIds, isLoading: isLoadingIds } = useQuery(
     ['itemIds', page],
     () => fetchIds(page),
     {},
   );
+
+  // когда наберется 50 уникальных элементов в itemIds
+  // делаем запрос для получения товаров
+  // внутри fetchItems фильтруем их, чтобы все товары были уникальными
   const { data: items, isLoading: isLoadingItems } = useQuery(
     ['items', itemIds],
     () => fetchItems(itemIds || []),
