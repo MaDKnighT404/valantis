@@ -1,11 +1,14 @@
 import { useQuery } from 'react-query';
 import { fetchIds, fetchItems } from '../api/api';
-import { useState } from 'react';
+
 import { Spinner } from './Spinner';
 import { PageSelector } from './PageSelector';
+import { useProductStore } from '../store';
+import { useEffect } from 'react';
 
-export const ItemsList = () => {
-  const [page, setPage] = useState(1);
+export const ProductsList = () => {
+  const page = useProductStore((state) => state.page);
+  const setIsLoading = useProductStore((state) => state.setIsLoading);
 
   const { data: itemIds, isLoading: isLoadingIds } = useQuery(
     ['itemIds', page],
@@ -21,16 +24,13 @@ export const ItemsList = () => {
   );
   const loading = isLoadingItems || isLoadingIds;
 
+  useEffect(() => {
+    setIsLoading(loading);
+  }, [loading, setIsLoading]);
+
   return (
-    <div
-      className="flex flex-col justify-center px-4 py-5 text-sm"
-    
-     >
-      <PageSelector
-        loading={loading}
-        page={page}
-        setPage={setPage}
-      />
+    <div className="flex flex-col justify-center px-4 py-5 text-sm">
+      <PageSelector />
       <div className="flex min-h-[650px] items-center justify-center">
         {loading ? (
           <Spinner className="h-32 w-32 text-teal-600" />
@@ -40,7 +40,7 @@ export const ItemsList = () => {
               items.map((item, i) => (
                 <li
                   key={item.id}
-                  className="flex h-[200px] cursor-pointer flex-col rounded-lg bg-white p-4 shadow transition-shadow duration-300 hover:shadow-xl">
+                  className="flex min-h-[200px] cursor-pointer flex-col rounded-lg bg-white p-4 shadow transition-shadow duration-300 hover:shadow-xl">
                   <span className="text-lg font-semibold">{item.product}</span>
                   <span className="mt-2 text-gray-600">
                     Price: ${item.price}

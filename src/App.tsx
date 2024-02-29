@@ -1,5 +1,5 @@
 import { FilterForm } from './components/FilterForm';
-import { ItemsList } from './components/ItemsList';
+import { ProductsList } from './components/ProductsList';
 
 const App = () => {
   return (
@@ -9,7 +9,7 @@ const App = () => {
           Test Task Valantis
         </h1>
         <FilterForm />
-        <ItemsList />
+        <ProductsList />
       </div>
     </main>
   );

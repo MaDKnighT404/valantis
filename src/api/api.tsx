@@ -1,9 +1,8 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import md5 from 'md5';
 
 type Id = string;
 
-// Определяем тип для ответа API
 type FetchIdsResponse = {
   result: Id[];
 };
@@ -48,7 +47,9 @@ export async function fetchIds(
         attempt += 1;
       }
     } catch (error) {
-      console.error('Ошибка при получении идентификаторов:', error);
+      const message =
+        (error as AxiosError).response?.data || (error as Error).message;
+      console.error('Ошибка при получении идентификаторов:', message);
       throw error;
     }
   };
@@ -61,27 +62,31 @@ export const fetchItems = async (ids: string[]): Promise<Item[]> => {
   const password = 'Valantis';
   const timestamp = new Date().toISOString().split('T')[0].replace(/-/g, '');
   const authString = md5(`${password}_${timestamp}`);
-
-  const response = await axios.post(
-    'https://api.valantis.store:41000/',
-    {
-      action: 'get_items',
-      params: { ids },
-    },
-    {
-      headers: {
-        'X-Auth': authString,
+  try {
+    const response = await axios.post(
+      'https://api.valantis.store:41000/',
+      {
+        action: 'get_items',
+        params: { ids },
       },
-    },
-  );
+      {
+        headers: {
+          'X-Auth': authString,
+        },
+      },
+    );
 
-  // Создаем Map для фильтрации дубликатов по id
-  const itemsMap = new Map<string, Item>(
-    response.data.result.map((item: Item) => [item.id, item]),
-  );
+    const itemsMap = new Map<string, Item>(
+      response.data.result.map((item: Item) => [item.id, item]),
+    );
 
-  // Преобразуем Map обратно в массив
-  const uniqueItems: Item[] = Array.from(itemsMap.values());
+    const uniqueItems: Item[] = Array.from(itemsMap.values());
 
-  return uniqueItems;
+    return uniqueItems;
+  } catch (error) {
+    const message =
+      (error as AxiosError).response?.data || (error as Error).message;
+    console.error('Ошибка при получении товаров:', message);
+    throw error;
+  }
 };
