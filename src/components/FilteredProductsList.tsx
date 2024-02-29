@@ -14,11 +14,12 @@ import { useEffect } from 'react';
 const ITEMS_PER_PAGE = 50;
 
 export const FilteredProductsList = () => {
-  const { filteredItemIds, filterPage, setTotalFilteredPages } =
+  const { filteredItemIds, filterPage, setTotalFilteredPages, setIsLoading } =
     useProductStore((state) => ({
       filteredItemIds: state.filteredItemIds,
       filterPage: state.filterPage,
       setTotalFilteredPages: state.setTotalFilteredPages,
+      setIsLoading: state.setIsLoading,
     }));
 
   // Вычисляем индексы для текущей страницы
@@ -40,8 +41,12 @@ export const FilteredProductsList = () => {
     setTotalFilteredPages(totalPages);
   }, [filteredItemIds, setTotalFilteredPages]);
 
+  useEffect(() => {
+    setIsLoading(isLoading);
+  }, [isLoading, setIsLoading]);
+
   return (
-    <div className="flex min-h-[650px] justify-center py-6">
+    <div className="flex min-h-[600px] justify-center py-6">
       {isLoading ? (
         <Spinner className="h-32 w-32 self-center text-teal-600" />
       ) : (

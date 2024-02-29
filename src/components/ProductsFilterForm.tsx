@@ -14,6 +14,7 @@ export const ProductsFilterForm = () => {
     setIsFilterActive,
     setPage,
     setFilterPage,
+    setTotalFilteredPages,
   } = useProductStore((state) => ({
     isLoading: state.isLoading,
     productsFilter: state.productsFilter,
@@ -22,6 +23,7 @@ export const ProductsFilterForm = () => {
     setIsFilterActive: state.setIsFilterActive,
     setPage: state.setPage,
     setFilterPage: state.setFilterPage,
+    setTotalFilteredPages: state.setTotalFilteredPages,
   }));
 
   // При выполнении мутации applyFilter устанавливаем в сторе массив с Id
@@ -49,6 +51,7 @@ export const ProductsFilterForm = () => {
     if (selectedFilter) {
       setPage(1);
       setFilterPage(1);
+      setTotalFilteredPages(0);
       setIsFilterActive(true);
       applyFilter(productsFilter);
     } else {

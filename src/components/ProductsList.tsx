@@ -34,7 +34,7 @@ export const ProductsList = () => {
   }, [loading, setIsLoading]);
 
   return (
-    <div className="flex min-h-[650px] justify-center py-6">
+    <div className="flex min-h-[600px] justify-center py-6">
       {loading ? (
         <Spinner className="h-32 w-32 self-center text-teal-600" />
       ) : (

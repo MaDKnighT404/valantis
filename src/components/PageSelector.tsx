@@ -5,6 +5,7 @@ export const PageSelector = () => {
   const {
     page,
     setPage,
+    isLoading,
     filterPage,
     isFilterActive,
     setFilterPage,
@@ -12,10 +13,9 @@ export const PageSelector = () => {
   } = useProductStore((state) => ({
     page: state.page,
     setPage: state.setPage,
-    productsFilter: state.productsFilter,
     isLoading: state.isLoading,
-    isFilterActive: state.isFilterActive,
     filterPage: state.filterPage,
+    isFilterActive: state.isFilterActive,
     setFilterPage: state.setFilterPage,
     totalFilteredPages: state.totalFilteredPages,
   }));
@@ -38,14 +38,15 @@ export const PageSelector = () => {
     }
   };
 
-  const isLoading = useProductStore((state) => state.isLoading);
+  const disablePrev = isFilterActive ? filterPage === 1 : page === 1;
+  const disableNext = isFilterActive ? filterPage >= totalFilteredPages : false;
 
   return (
     <div className="my-5 flex items-center justify-center gap-10 text-2xl text-teal-700">
       <button
         className="rounded bg-teal-600 px-3 py-1 font-semibold text-white hover:bg-teal-700 disabled:opacity-50 disabled:hover:bg-teal-600 disabled:hover:text-white"
         onClick={handlerDecreasePage}
-        disabled={isLoading || (page === 1 && filterPage === 1)}>
+        disabled={isLoading || disablePrev}>
         Prev
       </button>
 
@@ -58,7 +59,7 @@ export const PageSelector = () => {
 
       <button
         className="rounded bg-teal-600 px-3 py-1 font-semibold text-white hover:bg-teal-700 disabled:opacity-50 disabled:hover:bg-teal-600 disabled:hover:text-white"
-        disabled={isLoading || totalFilteredPages === filterPage}
+        disabled={isLoading || disableNext}
         onClick={handlerIncreasePage}>
         Next
       </button>
