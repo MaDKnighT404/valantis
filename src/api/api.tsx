@@ -1,10 +1,8 @@
 import axios, { AxiosError } from 'axios';
-import md5 from 'md5';
-
-type Id = string;
+import { generateAuthHeader } from '../utils';
 
 type FetchIdsResponse = {
-  result: Id[];
+  result: string[];
 };
 
 interface Item {
@@ -14,21 +12,23 @@ interface Item {
   product: string;
 }
 
+// не убрал в .env, чтобы у проверящих не было проблем при тестировании
+const BASE_URL = 'https://api.valantis.store:41000/';
+const PASSWORD = 'Valantis';
+
 export async function fetchIds(
   page: number = 1,
   limit: number = 50,
-): Promise<Id[]> {
-  const password = 'Valantis';
-  const timestamp = new Date().toISOString().split('T')[0].replace(/-/g, '');
-  const authString = md5(`${password}_${timestamp}`);
-  const collectedIds = new Set<Id>();
+): Promise<string[]> {
+  const authString = generateAuthHeader(PASSWORD);
+  const collectedIds = new Set<string>();
   let attempt = 1;
 
   const fetchIdsInternal = async (currentPage: number): Promise<void> => {
     const offset = (currentPage - 1) * limit;
     try {
       const response = await axios.post<FetchIdsResponse>(
-        'https://api.valantis.store:41000/',
+        BASE_URL,
         {
           action: 'get_ids',
           params: { offset, limit: limit * attempt },
@@ -59,12 +59,10 @@ export async function fetchIds(
 }
 
 export const fetchItems = async (ids: string[]): Promise<Item[]> => {
-  const password = 'Valantis';
-  const timestamp = new Date().toISOString().split('T')[0].replace(/-/g, '');
-  const authString = md5(`${password}_${timestamp}`);
+  const authString = generateAuthHeader(PASSWORD);
   try {
     const response = await axios.post(
-      'https://api.valantis.store:41000/',
+      BASE_URL,
       {
         action: 'get_items',
         params: { ids },
@@ -96,18 +94,18 @@ export const filterItems = async (filters: {
   product?: string;
   brand?: string;
 }) => {
-  const password = 'Valantis';
-  const timestamp = new Date().toISOString().split('T')[0].replace(/-/g, '');
-  const authString = md5(`${password}_${timestamp}`);
-  const baseURL = 'https://api.valantis.store:41000/';
+  const authString = generateAuthHeader(PASSWORD);
 
   const headers = {
     'X-Auth': authString,
   };
   try {
-    const filterResults = async (filterParam: string, value: any) => {
+    const filterResults = async (
+      filterParam: string,
+      value: string | number,
+    ) => {
       const response = await axios.post(
-        baseURL,
+        BASE_URL,
         {
           action: 'filter',
           params: { [filterParam]: value },
