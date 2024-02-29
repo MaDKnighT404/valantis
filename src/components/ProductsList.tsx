@@ -40,7 +40,7 @@ export const ProductsList = () => {
       ) : (
         <ul className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5 px-4">
           {!!items &&
-            items.map((item, i) => (
+            items.map((item) => (
               <li
                 key={item.id}
                 className="flex h-[200px] cursor-pointer flex-col rounded-lg bg-white p-4 shadow transition-shadow duration-300 hover:shadow-xl">
